@@ -86,6 +86,18 @@ class Board:
             if ver_score >= 4:
                 return 1
 
+        # check for ascending diagonal player win
+        for row in range(1+3, self.rows+1):
+            for col in range(1, self.cols+1-3):
+                if self.table[row][col] == 1 and self.table[row+1][col+1] == 1 and self.table[row+2][col+2] == 1 and self.table[row+3][col+3] == 1:
+                    return 1
+                
+        # check for descending diagonal player win
+        for row in range(1+3, self.rows+1):
+            for col in range(1+3, self.cols+1):
+                if self.table[row][col] == 1 and self.table[row-1][col-1] == 1 and self.table[row-2][col-2] == 1 and self.table[row-3][col-3] == 1:
+                    return 1
+
         hor_score = ver_score = 0
         # check for ENEMY horizontal win
         for row in range(1, self.rows+1):
@@ -106,6 +118,18 @@ class Board:
                     ver_score = 0
             if ver_score >= 4:
                 return 2
+
+        # check for ascending diagonal ENEMY win
+        for row in range(1+3, self.rows+1):
+            for col in range(1, self.cols+1-3):
+                if self.table[row][col] == 1 and self.table[row+1][col+1] == 1 and self.table[row+2][col+2] == 1 and self.table[row+3][col+3] == 2:
+                    return 2
+                
+        # check for descending diagonal ENEMY win
+        for row in range(1+3, self.rows+1):
+            for col in range(1+3, self.cols+1):
+                if self.table[row][col] == 1 and self.table[row-1][col-1] == 1 and self.table[row-2][col-2] == 1 and self.table[row-3][col-3] == 2:
+                    return 2
         
         return 0
 
@@ -118,14 +142,21 @@ if __name__ == '__main__':
     print('Running board.py.')
 
     B = Board(rows=5, cols=8, player_turn=True)
+
+    # diag player win
+    B.make_move(0)
+    B.make_move(0)
     B.make_move(0)
     B.make_move(1)
-    B.make_move(0)
+    B.make_move(1)
     B.make_move(2)
+    B.make_move(1)
+    B.make_move(4)
     B.make_move(0)
+    B.make_move(7)
     B.make_move(2)
-    B.make_move(0)
-    B.make_move(2)
+    B.make_move(7)
+    B.make_move(3)
 
     B.print_table()
     B.get_legal_moves()
