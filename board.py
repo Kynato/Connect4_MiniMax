@@ -55,6 +55,60 @@ class Board:
 
         self.player_turn = not self.player_turn
 
+    def get_legal_moves(self):
+        moves = []
+        for col in range(0, self.cols):
+            if self.is_move_legal(col):
+                moves.append(col)
+
+        print('legal moves: {moves}'.format(moves=str(moves)))
+        return moves
+
+    def check_for_win(self):
+        hor_score = ver_score = 0
+        # check for player horizontal win
+        for row in range(1, self.rows+1):
+            for col in range(1, self.cols+1):
+                if self.table[row][col] == 1:
+                    hor_score += 1
+                else:
+                    hor_score = 0
+            if hor_score >= 4:
+                return 1
+        
+        # check for player vertical win
+        for col in range(1, self.cols+1):
+            for row in range(1, self.rows+1):
+                if self.table[row][col] == 1:
+                    ver_score += 1
+                else:
+                    ver_score = 0
+            if ver_score >= 4:
+                return 1
+
+        hor_score = ver_score = 0
+        # check for ENEMY horizontal win
+        for row in range(1, self.rows+1):
+            for col in range(1, self.cols+1):
+                if self.table[row][col] == 2:
+                    hor_score += 1
+                else:
+                    hor_score = 0
+            if hor_score >= 4:
+                return 2
+        
+        # check for ENEMY vertical win
+        for col in range(1, self.cols+1):
+            for row in range(1, self.rows+1):
+                if self.table[row][col] == 2:
+                    ver_score += 1
+                else:
+                    ver_score = 0
+            if ver_score >= 4:
+                return 2
+        
+        return 0
+
 
 
 
@@ -64,13 +118,19 @@ if __name__ == '__main__':
     print('Running board.py.')
 
     B = Board(rows=5, cols=8, player_turn=True)
-    print(B.is_move_legal(0))
-    print(B.make_move(0))
-    print(B.make_move(0))
-    print(B.make_move(0))
-    print(B.make_move(0))
-    B.print_table()
+    B.make_move(0)
+    B.make_move(1)
+    B.make_move(0)
+    B.make_move(2)
+    B.make_move(0)
+    B.make_move(2)
+    B.make_move(0)
+    B.make_move(2)
 
+    B.print_table()
+    B.get_legal_moves()
+
+    print('Winner is: {winner}'.format(winner = B.check_for_win()))
 
 else:
     print('Importing board.py')
