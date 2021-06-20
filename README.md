@@ -1,1 +1,1 @@
-# TicTacToe_MinMax
+# Connect4_MinMax
