@@ -1,4 +1,4 @@
-
+from termcolor import colored
 
 class Board:
     def __init__(self, rows:int, cols:int, player_turn:bool):
@@ -7,9 +7,18 @@ class Board:
         self.player_turn = player_turn
         self.table = []
         self.border = 2
+        self.indexes_string = ''
 
+        self.create_indexes_string()
         self.create_table()
+        self.print_table()
 
+    def create_indexes_string(self):
+        ix = ''
+        for x in range(self.cols):
+            ix += '{nr} '.format(nr=x)
+        ix += '\n'
+        self.indexes_string = ix
 
     def create_table(self):
         for row in range(self.rows + self.border):
@@ -25,17 +34,21 @@ class Board:
         print('Created table with {rows} rows and {cols} cols'.format(rows=self.rows, cols=self.cols))
     
     def print_table(self):
-        i_like_coffee = ''
+        # Prints the game board
+        i_like_coffee = '==================\n'
         for row in range(1, self.rows + 1):
             for col in range(1, self.cols + 1):
-                i_like_coffee += str(self.table[row][col])
+                i_like_coffee += self.get_char(self.table[row][col])
             i_like_coffee += '\n'
-        print(i_like_coffee)
+        i_like_coffee += self.indexes_string
+        print(i_like_coffee + '==================')
 
     def is_move_legal(self, choice:int):
         # incrementing choice so we avoid calculating borders
         choice += 1
 
+        # inversed order because the table is upside down
+        # Checks if the spot is NOT TAKEN
         for row in reversed(range(1, self.rows+1)):
             if self.table[row][choice] == 0:
                 return (row, choice)
@@ -46,6 +59,14 @@ class Board:
         #print('Dropping token into {choice} row.'.format(choice=choice))
 
         choice += 1
+        legal_moves = self.get_legal_moves()
+        marker = False
+        for move in legal_moves:
+            if choice == move[1]:
+                marker = True
+        if marker == False:
+            return False
+
         for row in reversed(range(1, self.rows+1)):
             if self.table[row][choice] == 0:
                 if self.player_turn == True:
@@ -55,6 +76,7 @@ class Board:
                 break
 
         self.player_turn = not self.player_turn
+        return True
 
     def get_legal_moves(self):
         moves = []
@@ -68,29 +90,33 @@ class Board:
 
     def check_for_win(self):
         hor_score = ver_score = 0
-        player = 1
-        enemy = -1
+        player = -1
+        enemy = 1
         tie = 0
         not_decided = None
         # check for player horizontal win
         for row in range(1, self.rows+1):
+            hor_score = 0
             for col in range(1, self.cols+1):
                 if self.table[row][col] == 1:
                     hor_score += 1
+                    if hor_score >= 4:
+                        return player
                 else:
                     hor_score = 0
-            if hor_score >= 4:
-                return player
+            
         
         # check for player vertical win
         for col in range(1, self.cols+1):
+            ver_score = 0
             for row in range(1, self.rows+1):
                 if self.table[row][col] == 1:
                     ver_score += 1
+                    if ver_score >= 4:
+                        return player
                 else:
                     ver_score = 0
-            if ver_score >= 4:
-                return player
+            
 
         # check for ascending diagonal player win
         for row in range(1+3, self.rows+1):
@@ -107,23 +133,27 @@ class Board:
         hor_score = ver_score = 0
         # check for ENEMY horizontal win
         for row in range(1, self.rows+1):
+            hor_score = 0
             for col in range(1, self.cols+1):
                 if self.table[row][col] == 2:
                     hor_score += 1
+                    if hor_score >= 4:
+                        return enemy
                 else:
                     hor_score = 0
-            if hor_score >= 4:
-                return enemy
+            
         
         # check for ENEMY vertical win
         for col in range(1, self.cols+1):
+            ver_score = 0
             for row in range(1, self.rows+1):
                 if self.table[row][col] == 2:
                     ver_score += 1
+                    if ver_score >= 4:
+                        return enemy
                 else:
                     ver_score = 0
-            if ver_score >= 4:
-                return enemy
+            
 
         # check for ascending diagonal ENEMY win
         for row in range(1+3, self.rows+1):
@@ -146,33 +176,22 @@ class Board:
         # When tie
         return tie
 
-
+    def get_char(self, digit):
+        if digit == 0:
+            return '_ '
+        elif digit == 1:
+            return colored('O ', color='green')
+        else:
+            return colored('X ', color='red')
 
 
 
 
 if __name__ == '__main__':
-    print('Running board.py.')
+    print('RUNNING board.py.')
 
+    # TESTING
     B = Board(rows=5, cols=8, player_turn=True)
-
-    '''# diag player win
-    B.make_move(0)
-    B.make_move(0)
-    B.make_move(0)
-    B.make_move(1)
-    B.make_move(1)
-    B.make_move(2)
-    B.make_move(1)
-    B.make_move(4)
-    B.make_move(0)
-    B.make_move(7)
-    B.make_move(2)
-    B.make_move(7)
-    B.make_move(3)
-    B.make_move(7)
-    B.make_move(7)
-    B.make_move(7)'''
 
     B.make_move(7)
     B.make_move(7)
@@ -187,4 +206,4 @@ if __name__ == '__main__':
     print('Winner is: {winner}'.format(winner = B.check_for_win()))
 
 else:
-    print('Importing board.py')
+    print('IMPORTED == board.py ==')

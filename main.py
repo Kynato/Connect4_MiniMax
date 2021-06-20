@@ -1,44 +1,54 @@
 from minmax import AI
 from board import Board
+from termcolor import colored
+
+# CHANGE PROPERTIES HERE
+MINIMAX_DEPTH = 5
+GAME_WIDTH = 6
+GAME_HEIGHT = 4
+
+def report_win():
+    winner = game.check_for_win()
+    if winner != 0 and winner != None:
+        if winner == 1:
+            print('AI has won.')
+        else:
+            print('Player has won.')
+        
+        print('=================')
+        print('Final table state')
+        game.print_table()
+        return True
+    return False
+
+def welcome():
+    print('CONNECT 4 - GAME')
+    print(colored('O - you', 'green'))
+    print(colored('X - AI', 'red'))
 
 if __name__ == '__main__':
-    print('Running main.py.')
+    print('RUNNING main.py.')
 
     # Initiate board
-    game = Board(rows=4, cols=4, player_turn=True)
-    
+    game = Board(rows=GAME_HEIGHT, cols=GAME_WIDTH, player_turn=True)
 
+    # Initiate AI
+    AI = AI(depth=MINIMAX_DEPTH)
 
-    # AI part
-    AI = AI(depth=6)
+    welcome()
 
-    while(True):
+    # GAME LOOP
+    while(not report_win()):
+        # Player move
+        while not game.make_move(int(input('Make a move: '))):
+            print(colored('Try other move', 'yellow'))
         
-        
-        player_choice = input('Make a move:')
-        game.make_move(int(player_choice))
-        
-        winner = game.check_for_win()
-        if winner != 0 and winner != None:
-            if winner == 1:
-                print('Player has won.')
-            else:
-                print('AI has won.')
-            game.print_table()
-            break
-
+        # AI move
         game.make_move(AI.best_move(game))
+
+        # Render
         game.print_table()
-
-        winner = game.check_for_win()
-        if winner != 0 and winner != None:
-            if winner == 1:
-                print('Player has won.')
-            else:
-                print('AI has won.')
-            break
-
 
 
 else:
-    print('Importing main.py')
+    print('IMPORTED  == main.py ==')
