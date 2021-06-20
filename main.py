@@ -9,11 +9,13 @@ GAME_HEIGHT = 4
 
 def report_win():
     winner = game.check_for_win()
-    if winner != 0 and winner != None:
+    if winner != None:
         if winner == 1:
-            print('AI has won.')
+            print(colored('AI has won.', 'red'))
+        elif winner == -1:
+            print(colored('Player has won', 'green'))
         else:
-            print('Player has won.')
+            print(colored('TIE', 'yellow'))
         
         print('=================')
         print('Final table state')
